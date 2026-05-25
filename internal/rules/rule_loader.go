@@ -17,6 +17,7 @@ type Rule struct {
 	Severity   string `yaml:"severity"`
 	Confidence string `yaml:"confidence,omitempty"`
 	Generic    bool   `yaml:"generic,omitempty"`
+	Priority   int    `yaml:"priority,omitempty"`
 }
 
 type ruleFile struct {
@@ -68,6 +69,13 @@ func normalizeRule(rule *Rule) error {
 			rule.Confidence = "low"
 		} else {
 			rule.Confidence = "high"
+		}
+	}
+	if rule.Priority == 0 {
+		if rule.Generic {
+			rule.Priority = 10
+		} else {
+			rule.Priority = 50
 		}
 	}
 	switch rule.Confidence {

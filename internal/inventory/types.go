@@ -11,6 +11,7 @@ type Finding struct {
 	Severity    string `json:"severity"`
 	RiskType    string `json:"risk_type"`
 	Confidence  string `json:"confidence"`
+	Priority    int    `json:"-"`
 }
 
 type BusinessMetadata struct {

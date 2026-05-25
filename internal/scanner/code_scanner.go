@@ -129,6 +129,7 @@ func scanFile(root string, path string, loadedRules []rules.Rule) ([]inventory.F
 					Severity:    rule.Severity,
 					RiskType:    rule.RiskType,
 					Confidence:  confidenceForRule(rule, line),
+					Priority:    rule.Priority,
 				})
 			}
 		}
@@ -208,18 +209,17 @@ func dedupeLineFindings(findings []inventory.Finding) []inventory.Finding {
 	if len(findings) <= 1 {
 		return findings
 	}
-	hasSpecific := false
+	maxPriority := 0
 	for _, finding := range findings {
-		if finding.Confidence == "high" {
-			hasSpecific = true
-			break
+		if finding.Priority > maxPriority {
+			maxPriority = finding.Priority
 		}
 	}
 
 	seen := map[string]bool{}
 	var deduped []inventory.Finding
 	for _, finding := range findings {
-		if hasSpecific && finding.Confidence != "high" {
+		if finding.Priority < maxPriority {
 			continue
 		}
 		key := strings.Join([]string{finding.FilePath, fmt.Sprint(finding.LineNumber), finding.RuleID, finding.Algorithm, finding.RiskType}, "|")

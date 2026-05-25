@@ -33,8 +33,25 @@ func InferCryptoUsageType(matchedText string, ruleName string) string {
 	switch {
 	case strings.Contains(value, "jwt") || strings.Contains(value, "rs256") || strings.Contains(value, "es256"):
 		return "JWT signing"
+	case strings.Contains(value, "from crypto.publickey import rsa") ||
+		strings.Contains(value, "cryptography rsa import") ||
+		strings.Contains(value, "pycryptodome rsa import"):
+		return "crypto library import"
+	case strings.Contains(value, "rsa_private_key.pem") ||
+		strings.Contains(value, "rsa_public_key.pem") ||
+		strings.Contains(value, "private_key.pem") ||
+		strings.Contains(value, "public_key.pem"):
+		return "key file reference"
+	case strings.Contains(value, "rsa.import_key") ||
+		strings.Contains(value, "import_key") ||
+		strings.Contains(value, "key import"):
+		return "key import/loading"
 	case strings.Contains(value, "keypairgenerator"):
 		return "key generation"
+	case strings.Contains(value, "pkcs1_15") || strings.Contains(value, "crypto.signature"):
+		return "digital signature"
+	case strings.Contains(value, "pkcs1_oaep"):
+		return "encryption/decryption"
 	case strings.Contains(value, "createsign") || strings.Contains(value, "sign"):
 		return "digital signature"
 	case strings.Contains(value, "encrypt") || strings.Contains(value, "decrypt"):

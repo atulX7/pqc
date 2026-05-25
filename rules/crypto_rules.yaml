@@ -181,6 +181,48 @@ rules:
     algorithm: ECC
     risk_type: quantum_vulnerable_public_key
     severity: high
+  - id: pycryptodome-rsa-import
+    name: PyCryptodome RSA import
+    pattern: from Crypto.PublicKey import RSA
+    algorithm: RSA
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+    priority: 40
+  - id: pycryptodome-rsa-import-key
+    name: PyCryptodome RSA key import
+    pattern: RSA.import_key
+    algorithm: RSA
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+    priority: 80
+  - id: pycryptodome-pkcs1-oaep
+    name: PyCryptodome RSA OAEP encryption
+    pattern: PKCS1_OAEP
+    algorithm: RSA
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+    priority: 90
+  - id: pycryptodome-pkcs1-signature
+    name: PyCryptodome RSA PKCS#1 signature
+    pattern: pkcs1_15
+    algorithm: RSA
+    risk_type: quantum_vulnerable_signature
+    severity: high
+    priority: 90
+  - id: pycryptodome-signature-module
+    name: PyCryptodome signature module
+    pattern: Crypto.Signature
+    algorithm: RSA
+    risk_type: quantum_vulnerable_signature
+    severity: high
+    priority: 30
+  - id: pycryptodome-cipher-module
+    name: PyCryptodome cipher module
+    pattern: Crypto.Cipher
+    algorithm: RSA
+    risk_type: quantum_vulnerable_public_key
+    severity: medium
+    priority: 30
   - id: node-rsa-sign
     name: Node RSA SHA256 signing
     pattern: 'crypto.createSign("RSA-SHA256")'

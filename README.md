@@ -44,6 +44,8 @@ go build -o pqcscan ./cmd/pqcscan
   --crypto-agility partially_configurable \
   --vendor-dependency cloud_with_roadmap \
   --migration-complexity multi_system \
+  --domain api.example.com \
+  --excel-output report.xlsx \
   --output report.json
 ```
 
@@ -60,8 +62,12 @@ go run ./cmd/pqcscan scan \
   --crypto-agility partially_configurable \
   --vendor-dependency cloud_with_roadmap \
   --migration-complexity multi_system \
+  --domain api.example.com \
+  --excel-output report.xlsx \
   --output report.json
 ```
+
+Use `--domains-file domains.txt` to scan multiple TLS endpoints, one domain per line.
 
 ## Web UI
 
@@ -160,11 +166,19 @@ The JSON report includes:
 - `highest_quantum_risk_score`
 - `risk_posture`
 - `recommended_next_steps`
+- `executive_summary`
+
+The CLI can also export an Excel workbook with:
+
+- Executive summary
+- Top critical assets
+- Full crypto inventory
 
 ## Security Notes
 
 - The scanner only reads files.
 - It never executes scanned code.
+- TLS domain scanning only performs a TLS handshake and reads certificate metadata.
 - Binary files and large files above 10 MB are skipped.
 - Private key material is masked in reports.
 - `matched_text` is capped at 300 characters.

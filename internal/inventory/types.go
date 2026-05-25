@@ -10,6 +10,7 @@ type Finding struct {
 	Algorithm   string `json:"algorithm"`
 	Severity    string `json:"severity"`
 	RiskType    string `json:"risk_type"`
+	Confidence  string `json:"confidence"`
 }
 
 type BusinessMetadata struct {
@@ -32,6 +33,7 @@ type CryptoAsset struct {
 	Algorithm             string   `json:"algorithm"`
 	Severity              string   `json:"severity"`
 	RiskType              string   `json:"risk_type"`
+	Confidence            string   `json:"confidence"`
 	MatchedText           string   `json:"matched_text"`
 	SensitivityFlags      []string `json:"sensitivity_flags"`
 	ExposureLevel         string   `json:"exposure_level"`

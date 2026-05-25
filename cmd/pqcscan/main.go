@@ -33,10 +33,17 @@ func runScan(args []string) error {
 	flags.StringVar(&options.VendorDependency, "vendor-dependency", options.VendorDependency, "vendor dependency level")
 	flags.StringVar(&options.MigrationComplexity, "migration-complexity", options.MigrationComplexity, "migration complexity")
 	flags.StringVar(&options.RulesPath, "rules", options.RulesPath, "rules YAML path")
+	domain := flags.String("domain", "", "TLS domain to scan, for example example.com or example.com:443")
+	flags.StringVar(&options.DomainsFile, "domains-file", "", "file containing TLS domains to scan, one per line")
 	output := flags.String("output", "report.json", "JSON output path")
+	excelOutput := flags.String("excel-output", "", "optional Excel .xlsx output path")
 
 	if err := flags.Parse(args); err != nil {
 		return err
+	}
+
+	if *domain != "" {
+		options.Domains = append(options.Domains, *domain)
 	}
 
 	jsonReport, err := app.RunScan(options)
@@ -46,6 +53,11 @@ func runScan(args []string) error {
 
 	if err := report.WriteJSON(*output, jsonReport); err != nil {
 		return fmt.Errorf("write JSON report: %w", err)
+	}
+	if *excelOutput != "" {
+		if err := report.WriteExcel(*excelOutput, jsonReport); err != nil {
+			return fmt.Errorf("write Excel report: %w", err)
+		}
 	}
 	fmt.Printf("PQC scan complete: %d findings, highest risk %.2f (%s). Report written to %s\n",
 		jsonReport.TotalFindings,

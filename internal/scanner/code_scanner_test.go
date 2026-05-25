@@ -87,3 +87,26 @@ func TestScanPathMatchesStandaloneCryptoPattern(t *testing.T) {
 		t.Fatalf("expected 1 finding, got %d", len(result.Findings))
 	}
 }
+
+func TestScanPathDedupesGenericWhenSpecificRuleMatches(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "CryptoFactory.java"), []byte(`return KeyPairGenerator.getInstance("RSA");`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	loadedRules := []rules.Rule{
+		{ID: "rsa-generic", Name: "RSA usage", Pattern: "RSA", Algorithm: "RSA", RiskType: "quantum_vulnerable_public_key", Severity: "high", Confidence: "low", Generic: true},
+		{ID: "java-rsa-keypair", Name: "Java RSA KeyPairGenerator", Pattern: `KeyPairGenerator.getInstance("RSA")`, Algorithm: "RSA", RiskType: "quantum_vulnerable_public_key", Severity: "high", Confidence: "high"},
+	}
+
+	result, err := ScanPath(dir, loadedRules)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Findings) != 1 {
+		t.Fatalf("expected 1 deduped finding, got %d", len(result.Findings))
+	}
+	if result.Findings[0].RuleID != "java-rsa-keypair" || result.Findings[0].Confidence != "high" {
+		t.Fatalf("expected high-confidence specific finding, got %+v", result.Findings[0])
+	}
+}

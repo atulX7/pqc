@@ -41,36 +41,48 @@ rules:
     algorithm: RSA-2048
     risk_type: quantum_vulnerable_public_key
     severity: high
+    confidence: medium
+    generic: true
   - id: rsa-4096
     name: RSA 4096 usage
     pattern: RSA-4096
     algorithm: RSA-4096
     risk_type: quantum_vulnerable_public_key
     severity: medium
+    confidence: medium
+    generic: true
   - id: rsa-generic
     name: RSA usage
     pattern: RSA
     algorithm: RSA
     risk_type: quantum_vulnerable_public_key
     severity: high
+    confidence: low
+    generic: true
   - id: ecc-generic
     name: ECC usage
     pattern: ECC
     algorithm: ECC
     risk_type: quantum_vulnerable_public_key
     severity: high
+    confidence: low
+    generic: true
   - id: ecdsa-generic
     name: ECDSA usage
     pattern: ECDSA
     algorithm: ECDSA
     risk_type: quantum_vulnerable_signature
     severity: high
+    confidence: low
+    generic: true
   - id: ecdh-generic
     name: ECDH usage
     pattern: ECDH
     algorithm: ECDH
     risk_type: quantum_vulnerable_key_exchange
     severity: high
+    confidence: low
+    generic: true
   - id: diffie-hellman
     name: Diffie-Hellman usage
     pattern: Diffie-Hellman
@@ -83,24 +95,32 @@ rules:
     algorithm: DH
     risk_type: quantum_vulnerable_key_exchange
     severity: high
+    confidence: low
+    generic: true
   - id: dsa-generic
     name: DSA usage
     pattern: DSA
     algorithm: DSA
     risk_type: deprecated_signature
     severity: critical
+    confidence: low
+    generic: true
   - id: sha1
     name: SHA1 usage
     pattern: SHA1
     algorithm: SHA1
     risk_type: weak_hash
     severity: high
+    confidence: medium
+    generic: true
   - id: md5
     name: MD5 usage
     pattern: MD5
     algorithm: MD5
     risk_type: weak_hash
     severity: critical
+    confidence: medium
+    generic: true
   - id: tls-ecdhe-rsa
     name: TLS ECDHE RSA cipher suite
     pattern: TLS_ECDHE_RSA

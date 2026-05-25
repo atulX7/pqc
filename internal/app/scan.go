@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -24,6 +25,8 @@ type ScanOptions struct {
 	VendorDependency     string
 	MigrationComplexity  string
 	RulesPath            string
+	Domains              []string
+	DomainsFile          string
 }
 
 func DefaultScanOptions() ScanOptions {
@@ -65,6 +68,16 @@ func RunScan(options ScanOptions) (report.JSONReport, error) {
 	if err != nil {
 		return report.JSONReport{}, err
 	}
+	findings := append([]inventory.Finding(nil), scanResult.Findings...)
+	domains, err := domainsFromOptions(options)
+	if err != nil {
+		return report.JSONReport{}, err
+	}
+	if len(domains) > 0 {
+		tlsResult := scanner.ScanTLSDomains(domains)
+		findings = append(findings, tlsResult.Findings...)
+		scanResult.UnreadableFiles = append(scanResult.UnreadableFiles, tlsResult.Errors...)
+	}
 
 	metadata := inventory.BusinessMetadata{
 		ApplicationName:       options.ApplicationName,
@@ -77,7 +90,7 @@ func RunScan(options ScanOptions) (report.JSONReport, error) {
 		MigrationComplexity:   options.MigrationComplexity,
 	}
 
-	assets := inventory.NormalizeFindings(scanResult.Findings, metadata)
+	assets := inventory.NormalizeFindings(findings, metadata)
 	assets = scoring.ScoreAssets(assets)
 	assets = recommendation.AddRecommendations(assets)
 
@@ -86,6 +99,39 @@ func RunScan(options ScanOptions) (report.JSONReport, error) {
 		FilesSkipped:    scanResult.FilesSkipped,
 		UnreadableFiles: scanResult.UnreadableFiles,
 	}, assets), nil
+}
+
+func domainsFromOptions(options ScanOptions) ([]string, error) {
+	domains := append([]string(nil), options.Domains...)
+	if strings.TrimSpace(options.DomainsFile) == "" {
+		return normalizeDomains(domains), nil
+	}
+	data, err := os.ReadFile(options.DomainsFile)
+	if err != nil {
+		return nil, fmt.Errorf("read domains file: %w", err)
+	}
+	for _, line := range strings.Split(string(data), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		domains = append(domains, line)
+	}
+	return normalizeDomains(domains), nil
+}
+
+func normalizeDomains(domains []string) []string {
+	seen := map[string]bool{}
+	normalized := make([]string, 0, len(domains))
+	for _, domain := range domains {
+		domain = strings.TrimSpace(domain)
+		if domain == "" || seen[domain] {
+			continue
+		}
+		seen[domain] = true
+		normalized = append(normalized, domain)
+	}
+	return normalized
 }
 
 func splitCSV(value string) []string {

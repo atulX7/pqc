@@ -14,6 +14,7 @@ func NormalizeFindings(findings []Finding, metadata BusinessMetadata) []CryptoAs
 			Algorithm:             finding.Algorithm,
 			Severity:              finding.Severity,
 			RiskType:              finding.RiskType,
+			Confidence:            finding.Confidence,
 			MatchedText:           finding.MatchedText,
 			SensitivityFlags:      metadata.SensitivityFlags,
 			ExposureLevel:         metadata.ExposureLevel,

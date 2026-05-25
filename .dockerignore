@@ -1,6 +1,11 @@
 .git
 report.json
+reports
+*.xlsx
+*.zip
 pqcscan
+pqcweb
 tmp
 dist
+build
 .DS_Store

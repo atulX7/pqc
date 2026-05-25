@@ -115,9 +115,10 @@ func scanFile(root string, path string, loadedRules []rules.Rule) ([]inventory.F
 	for lineScanner.Scan() {
 		lineNumber++
 		line := lineScanner.Text()
+		var lineFindings []inventory.Finding
 		for _, rule := range loadedRules {
 			if matchesRulePattern(line, rule.Pattern) {
-				findings = append(findings, inventory.Finding{
+				lineFindings = append(lineFindings, inventory.Finding{
 					SourceType:  sourceTypeFor(path),
 					FilePath:    filepath.ToSlash(relPath),
 					LineNumber:  lineNumber,
@@ -127,9 +128,11 @@ func scanFile(root string, path string, loadedRules []rules.Rule) ([]inventory.F
 					Algorithm:   rule.Algorithm,
 					Severity:    rule.Severity,
 					RiskType:    rule.RiskType,
+					Confidence:  confidenceForRule(rule, line),
 				})
 			}
 		}
+		findings = append(findings, dedupeLineFindings(lineFindings)...)
 	}
 	if err := lineScanner.Err(); err != nil {
 		return nil, err
@@ -138,27 +141,34 @@ func scanFile(root string, path string, loadedRules []rules.Rule) ([]inventory.F
 }
 
 func matchesRulePattern(line string, pattern string) bool {
-	line = strings.ToLower(line)
-	pattern = strings.ToLower(pattern)
+	lineLower := strings.ToLower(line)
+	patternLower := strings.ToLower(pattern)
 	if pattern == "" {
 		return false
+	}
+	if isExactPattern(pattern) {
+		return strings.Contains(lineLower, patternLower)
 	}
 
 	start := 0
 	for {
-		index := strings.Index(line[start:], pattern)
+		index := strings.Index(lineLower[start:], patternLower)
 		if index < 0 {
 			return false
 		}
 		index += start
-		beforeOK := index == 0 || !isTokenChar(rune(line[index-1]))
-		after := index + len(pattern)
-		afterOK := after == len(line) || !isTokenChar(rune(line[after]))
+		beforeOK := index == 0 || !isTokenChar(rune(lineLower[index-1]))
+		after := index + len(patternLower)
+		afterOK := after == len(lineLower) || !isTokenChar(rune(lineLower[after]))
 		if beforeOK && afterOK {
 			return true
 		}
 		start = index + 1
 	}
+}
+
+func isExactPattern(pattern string) bool {
+	return strings.ContainsAny(pattern, "\"'().:_/- ") || len(pattern) > 8
 }
 
 func isTokenChar(char rune) bool {
@@ -167,6 +177,59 @@ func isTokenChar(char rune) bool {
 		(char >= '0' && char <= '9') ||
 		char == '_' ||
 		char == '-'
+}
+
+func confidenceForRule(rule rules.Rule, line string) string {
+	if !rule.Generic {
+		return "high"
+	}
+	value := strings.ToLower(line)
+	switch strings.ToUpper(rule.Algorithm) {
+	case "RSA":
+		if strings.Contains(value, "encrypt") || strings.Contains(value, "sign") || strings.Contains(value, "key") || strings.Contains(value, "cert") || strings.Contains(value, "tls") {
+			return "medium"
+		}
+	case "DH", "ECDH":
+		if strings.Contains(value, "key") || strings.Contains(value, "exchange") || strings.Contains(value, "tls") || strings.Contains(value, "cipher") {
+			return "medium"
+		}
+	case "MD5", "SHA1":
+		if strings.Contains(value, "hash") || strings.Contains(value, "digest") || strings.Contains(value, "checksum") {
+			return "medium"
+		}
+	}
+	if rule.Confidence != "" {
+		return rule.Confidence
+	}
+	return "low"
+}
+
+func dedupeLineFindings(findings []inventory.Finding) []inventory.Finding {
+	if len(findings) <= 1 {
+		return findings
+	}
+	hasSpecific := false
+	for _, finding := range findings {
+		if finding.Confidence == "high" {
+			hasSpecific = true
+			break
+		}
+	}
+
+	seen := map[string]bool{}
+	var deduped []inventory.Finding
+	for _, finding := range findings {
+		if hasSpecific && finding.Confidence != "high" {
+			continue
+		}
+		key := strings.Join([]string{finding.FilePath, fmt.Sprint(finding.LineNumber), finding.RuleID, finding.Algorithm, finding.RiskType}, "|")
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		deduped = append(deduped, finding)
+	}
+	return deduped
 }
 
 func sourceTypeFor(path string) string {

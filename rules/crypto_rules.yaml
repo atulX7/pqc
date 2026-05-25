@@ -1,0 +1,169 @@
+rules:
+  - id: jwt-rs256
+    name: JWT RS256 signing
+    pattern: RS256
+    algorithm: RSA
+    risk_type: quantum_vulnerable_signature
+    severity: high
+  - id: jwt-rs384
+    name: JWT RS384 signing
+    pattern: RS384
+    algorithm: RSA
+    risk_type: quantum_vulnerable_signature
+    severity: high
+  - id: jwt-rs512
+    name: JWT RS512 signing
+    pattern: RS512
+    algorithm: RSA
+    risk_type: quantum_vulnerable_signature
+    severity: high
+  - id: jwt-es256
+    name: JWT ES256 signing
+    pattern: ES256
+    algorithm: ECDSA
+    risk_type: quantum_vulnerable_signature
+    severity: high
+  - id: jwt-es384
+    name: JWT ES384 signing
+    pattern: ES384
+    algorithm: ECDSA
+    risk_type: quantum_vulnerable_signature
+    severity: high
+  - id: jwt-es512
+    name: JWT ES512 signing
+    pattern: ES512
+    algorithm: ECDSA
+    risk_type: quantum_vulnerable_signature
+    severity: high
+  - id: rsa-2048
+    name: RSA 2048 usage
+    pattern: RSA-2048
+    algorithm: RSA-2048
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+  - id: rsa-4096
+    name: RSA 4096 usage
+    pattern: RSA-4096
+    algorithm: RSA-4096
+    risk_type: quantum_vulnerable_public_key
+    severity: medium
+  - id: rsa-generic
+    name: RSA usage
+    pattern: RSA
+    algorithm: RSA
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+  - id: ecc-generic
+    name: ECC usage
+    pattern: ECC
+    algorithm: ECC
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+  - id: ecdsa-generic
+    name: ECDSA usage
+    pattern: ECDSA
+    algorithm: ECDSA
+    risk_type: quantum_vulnerable_signature
+    severity: high
+  - id: ecdh-generic
+    name: ECDH usage
+    pattern: ECDH
+    algorithm: ECDH
+    risk_type: quantum_vulnerable_key_exchange
+    severity: high
+  - id: diffie-hellman
+    name: Diffie-Hellman usage
+    pattern: Diffie-Hellman
+    algorithm: DH
+    risk_type: quantum_vulnerable_key_exchange
+    severity: high
+  - id: dh-generic
+    name: DH usage
+    pattern: DH
+    algorithm: DH
+    risk_type: quantum_vulnerable_key_exchange
+    severity: high
+  - id: dsa-generic
+    name: DSA usage
+    pattern: DSA
+    algorithm: DSA
+    risk_type: deprecated_signature
+    severity: critical
+  - id: sha1
+    name: SHA1 usage
+    pattern: SHA1
+    algorithm: SHA1
+    risk_type: weak_hash
+    severity: high
+  - id: md5
+    name: MD5 usage
+    pattern: MD5
+    algorithm: MD5
+    risk_type: weak_hash
+    severity: critical
+  - id: tls-ecdhe-rsa
+    name: TLS ECDHE RSA cipher suite
+    pattern: TLS_ECDHE_RSA
+    algorithm: RSA
+    risk_type: quantum_vulnerable_tls
+    severity: high
+  - id: tls-ecdhe-ecdsa
+    name: TLS ECDHE ECDSA cipher suite
+    pattern: TLS_ECDHE_ECDSA
+    algorithm: ECDSA
+    risk_type: quantum_vulnerable_tls
+    severity: high
+  - id: rsa-private-key
+    name: RSA private key committed
+    pattern: "-----BEGIN RSA PRIVATE KEY-----"
+    algorithm: RSA
+    risk_type: secret_exposure
+    severity: critical
+  - id: generic-private-key
+    name: Private key committed
+    pattern: "-----BEGIN PRIVATE KEY-----"
+    algorithm: UNKNOWN
+    risk_type: secret_exposure
+    severity: critical
+  - id: ssh-rsa-key
+    name: SSH RSA key material
+    pattern: ssh-rsa
+    algorithm: RSA
+    risk_type: secret_or_key_material
+    severity: high
+  - id: ssh-ecdsa-key
+    name: SSH ECDSA key material
+    pattern: ecdsa-sha2
+    algorithm: ECDSA
+    risk_type: secret_or_key_material
+    severity: high
+  - id: java-rsa-keypair
+    name: Java RSA KeyPairGenerator
+    pattern: 'KeyPairGenerator.getInstance("RSA")'
+    algorithm: RSA
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+  - id: java-ec-keypair
+    name: Java EC KeyPairGenerator
+    pattern: 'KeyPairGenerator.getInstance("EC")'
+    algorithm: ECC
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+  - id: python-crypto-rsa-import
+    name: Python cryptography RSA import
+    pattern: from cryptography.hazmat.primitives.asymmetric import rsa
+    algorithm: RSA
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+  - id: python-crypto-ec-import
+    name: Python cryptography EC import
+    pattern: from cryptography.hazmat.primitives.asymmetric import ec
+    algorithm: ECC
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+  - id: node-rsa-sign
+    name: Node RSA SHA256 signing
+    pattern: 'crypto.createSign("RSA-SHA256")'
+    algorithm: RSA
+    risk_type: quantum_vulnerable_signature
+    severity: high

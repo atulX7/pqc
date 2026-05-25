@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pqc-readiness
+  namespace: pqc
+  labels:
+    app: pqc-readiness
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pqc-readiness
+  template:
+    metadata:
+      labels:
+        app: pqc-readiness
+    spec:
+      containers:
+        - name: pqc-readiness
+          image: pqc-readiness:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

@@ -26,20 +26,20 @@ type CriticalAsset struct {
 
 type JSONReport struct {
 	ApplicationName         string                  `json:"application_name"`
-	ScanSummary            ScanSummary             `json:"scan_summary"`
-	TotalFindings          int                     `json:"total_findings"`
-	FindingsByAlgorithm    map[string]int          `json:"findings_by_algorithm"`
-	FindingsBySeverity     map[string]int          `json:"findings_by_severity"`
-	TopCriticalAssets      []CriticalAsset         `json:"top_critical_assets"`
-	FullCryptoInventory    []inventory.CryptoAsset `json:"full_crypto_inventory"`
+	ScanSummary             ScanSummary             `json:"scan_summary"`
+	TotalFindings           int                     `json:"total_findings"`
+	FindingsByAlgorithm     map[string]int          `json:"findings_by_algorithm"`
+	FindingsBySeverity      map[string]int          `json:"findings_by_severity"`
+	TopCriticalAssets       []CriticalAsset         `json:"top_critical_assets"`
+	FullCryptoInventory     []inventory.CryptoAsset `json:"full_crypto_inventory"`
 	HighestQuantumRiskScore float64                 `json:"highest_quantum_risk_score"`
-	RiskPosture            string                  `json:"risk_posture"`
-	RecommendedNextSteps   []string                `json:"recommended_next_steps"`
+	RiskPosture             string                  `json:"risk_posture"`
+	RecommendedNextSteps    []string                `json:"recommended_next_steps"`
 }
 
 func Build(applicationName string, summary ScanSummary, assets []inventory.CryptoAsset) JSONReport {
 	report := JSONReport{
-		ApplicationName:      applicationName,
+		ApplicationName:     applicationName,
 		ScanSummary:         summary,
 		TotalFindings:       len(assets),
 		FindingsByAlgorithm: map[string]int{},
@@ -56,6 +56,9 @@ func Build(applicationName string, summary ScanSummary, assets []inventory.Crypt
 		}
 	}
 	report.TopCriticalAssets = topAssets(assets, 5)
+	if len(assets) == 0 {
+		report.RiskPosture = "Low"
+	}
 	report.RecommendedNextSteps = nextSteps(report.RiskPosture, len(assets))
 	return report
 }

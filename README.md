@@ -63,6 +63,45 @@ go run ./cmd/pqcscan scan \
   --output report.json
 ```
 
+## Web UI
+
+Run the assessment UI locally:
+
+```bash
+go run ./cmd/pqcweb
+```
+
+Then open:
+
+```text
+http://localhost:8080
+```
+
+The web app can scan the included sample repository or an uploaded repository `.zip`.
+
+## Docker and Kubernetes
+
+Build the web container:
+
+```bash
+docker build -t pqc-readiness:dev .
+```
+
+Deploy to Docker Desktop Kubernetes:
+
+```bash
+kubectl apply -k k8s
+kubectl -n pqc get pods,svc
+```
+
+If needed, port-forward the service:
+
+```bash
+kubectl -n pqc port-forward svc/pqc-readiness 8080:8080
+```
+
+See [docs/kubernetes.md](docs/kubernetes.md) for endpoint details.
+
 ## Metadata Values
 
 Sensitivity examples:

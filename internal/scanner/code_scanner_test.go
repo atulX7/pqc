@@ -49,3 +49,41 @@ func TestScanPathFindsCryptoAndMasksPrivateKeys(t *testing.T) {
 		t.Fatal("expected private key material to be masked")
 	}
 }
+
+func TestScanPathDoesNotMatchCryptoPatternInsideIdentifier(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "EmotiSimUnity.cs"), []byte(`var resp = JsonUtility.FromJson<EmotionResponse>(www.downloadHandler.text);`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	loadedRules := []rules.Rule{
+		{ID: "dh-generic", Name: "DH usage", Pattern: "DH", Algorithm: "DH", RiskType: "quantum_vulnerable_key_exchange", Severity: "high"},
+	}
+
+	result, err := ScanPath(dir, loadedRules)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Findings) != 0 {
+		t.Fatalf("expected no findings, got %d", len(result.Findings))
+	}
+}
+
+func TestScanPathMatchesStandaloneCryptoPattern(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "tls.yaml"), []byte(`key_exchange: DH`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	loadedRules := []rules.Rule{
+		{ID: "dh-generic", Name: "DH usage", Pattern: "DH", Algorithm: "DH", RiskType: "quantum_vulnerable_key_exchange", Severity: "high"},
+	}
+
+	result, err := ScanPath(dir, loadedRules)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Findings) != 1 {
+		t.Fatalf("expected 1 finding, got %d", len(result.Findings))
+	}
+}

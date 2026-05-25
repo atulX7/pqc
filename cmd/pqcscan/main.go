@@ -4,15 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"path/filepath"
-	"strings"
 
-	"github.com/atulX7/pqc/internal/inventory"
-	"github.com/atulX7/pqc/internal/recommendation"
+	"github.com/atulX7/pqc/internal/app"
 	"github.com/atulX7/pqc/internal/report"
-	"github.com/atulX7/pqc/internal/rules"
-	"github.com/atulX7/pqc/internal/scanner"
-	"github.com/atulX7/pqc/internal/scoring"
 )
 
 func main() {
@@ -28,56 +22,27 @@ func main() {
 
 func runScan(args []string) error {
 	flags := flag.NewFlagSet("scan", flag.ContinueOnError)
-	scanPath := flags.String("path", ".", "local repository or folder to scan")
-	appName := flags.String("app-name", "Unknown Application", "application name")
-	sensitivity := flags.String("sensitivity", "internal", "comma-separated sensitivity flags")
-	exposure := flags.String("exposure", "internal", "exposure level")
-	businessCriticality := flags.String("business-criticality", "medium", "business criticality")
-	secrecyLifetimeYears := flags.Int("secrecy-lifetime-years", 1, "secrecy lifetime in years")
-	cryptoAgility := flags.String("crypto-agility", "partially_configurable", "crypto agility level")
-	vendorDependency := flags.String("vendor-dependency", "none", "vendor dependency level")
-	migrationComplexity := flags.String("migration-complexity", "code_change", "migration complexity")
+	options := app.DefaultScanOptions()
+	flags.StringVar(&options.Path, "path", options.Path, "local repository or folder to scan")
+	flags.StringVar(&options.ApplicationName, "app-name", options.ApplicationName, "application name")
+	flags.StringVar(&options.Sensitivity, "sensitivity", options.Sensitivity, "comma-separated sensitivity flags")
+	flags.StringVar(&options.Exposure, "exposure", options.Exposure, "exposure level")
+	flags.StringVar(&options.BusinessCriticality, "business-criticality", options.BusinessCriticality, "business criticality")
+	flags.IntVar(&options.SecrecyLifetimeYears, "secrecy-lifetime-years", options.SecrecyLifetimeYears, "secrecy lifetime in years")
+	flags.StringVar(&options.CryptoAgility, "crypto-agility", options.CryptoAgility, "crypto agility level")
+	flags.StringVar(&options.VendorDependency, "vendor-dependency", options.VendorDependency, "vendor dependency level")
+	flags.StringVar(&options.MigrationComplexity, "migration-complexity", options.MigrationComplexity, "migration complexity")
+	flags.StringVar(&options.RulesPath, "rules", options.RulesPath, "rules YAML path")
 	output := flags.String("output", "report.json", "JSON output path")
-	rulesPath := flags.String("rules", "rules/crypto_rules.yaml", "rules YAML path")
 
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
 
-	loadedRules, err := rules.LoadRules(*rulesPath)
+	jsonReport, err := app.RunScan(options)
 	if err != nil {
 		return err
 	}
-
-	absScanPath, err := filepath.Abs(*scanPath)
-	if err != nil {
-		return fmt.Errorf("resolve scan path: %w", err)
-	}
-	scanResult, err := scanner.ScanPath(absScanPath, loadedRules)
-	if err != nil {
-		return err
-	}
-
-	metadata := inventory.BusinessMetadata{
-		ApplicationName:       *appName,
-		SensitivityFlags:      splitCSV(*sensitivity),
-		ExposureLevel:         *exposure,
-		BusinessCriticality:   *businessCriticality,
-		SecrecyLifetimeYears:  *secrecyLifetimeYears,
-		CryptoAgilityLevel:    *cryptoAgility,
-		VendorDependencyLevel: *vendorDependency,
-		MigrationComplexity:   *migrationComplexity,
-	}
-
-	assets := inventory.NormalizeFindings(scanResult.Findings, metadata)
-	assets = scoring.ScoreAssets(assets)
-	assets = recommendation.AddRecommendations(assets)
-
-	jsonReport := report.Build(*appName, report.ScanSummary{
-		FilesScanned:    scanResult.FilesScanned,
-		FilesSkipped:    scanResult.FilesSkipped,
-		UnreadableFiles: scanResult.UnreadableFiles,
-	}, assets)
 
 	if err := report.WriteJSON(*output, jsonReport); err != nil {
 		return fmt.Errorf("write JSON report: %w", err)
@@ -89,15 +54,4 @@ func runScan(args []string) error {
 		*output,
 	)
 	return nil
-}
-
-func splitCSV(value string) []string {
-	var values []string
-	for _, item := range strings.Split(value, ",") {
-		item = strings.TrimSpace(item)
-		if item != "" {
-			values = append(values, item)
-		}
-	}
-	return values
 }

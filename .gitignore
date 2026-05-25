@@ -1,0 +1,35 @@
+# OS/editor noise
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Local env/config
+.env
+.env.*
+!.env.example
+
+# Build outputs
+bin/
+dist/
+build/
+tmp/
+coverage.out
+*.test
+/pqcscan
+/pqcweb
+
+# Generated reports and uploaded archives
+report.json
+reports/
+*.zip
+*.tar
+*.tar.gz
+
+# Logs
+*.log
+
+# Dependencies and caches
+node_modules/
+vendor/

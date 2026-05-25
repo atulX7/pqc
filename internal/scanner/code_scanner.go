@@ -29,9 +29,9 @@ var scannedExtensions = map[string]bool{
 }
 
 type ScanResult struct {
-	Findings       []inventory.Finding
-	FilesScanned   int
-	FilesSkipped   int
+	Findings        []inventory.Finding
+	FilesScanned    int
+	FilesSkipped    int
 	UnreadableFiles []string
 }
 
@@ -116,7 +116,7 @@ func scanFile(root string, path string, loadedRules []rules.Rule) ([]inventory.F
 		lineNumber++
 		line := lineScanner.Text()
 		for _, rule := range loadedRules {
-			if strings.Contains(strings.ToLower(line), strings.ToLower(rule.Pattern)) {
+			if matchesRulePattern(line, rule.Pattern) {
 				findings = append(findings, inventory.Finding{
 					SourceType:  sourceTypeFor(path),
 					FilePath:    filepath.ToSlash(relPath),
@@ -135,6 +135,38 @@ func scanFile(root string, path string, loadedRules []rules.Rule) ([]inventory.F
 		return nil, err
 	}
 	return findings, nil
+}
+
+func matchesRulePattern(line string, pattern string) bool {
+	line = strings.ToLower(line)
+	pattern = strings.ToLower(pattern)
+	if pattern == "" {
+		return false
+	}
+
+	start := 0
+	for {
+		index := strings.Index(line[start:], pattern)
+		if index < 0 {
+			return false
+		}
+		index += start
+		beforeOK := index == 0 || !isTokenChar(rune(line[index-1]))
+		after := index + len(pattern)
+		afterOK := after == len(line) || !isTokenChar(rune(line[after]))
+		if beforeOK && afterOK {
+			return true
+		}
+		start = index + 1
+	}
+}
+
+func isTokenChar(char rune) bool {
+	return (char >= 'a' && char <= 'z') ||
+		(char >= 'A' && char <= 'Z') ||
+		(char >= '0' && char <= '9') ||
+		char == '_' ||
+		char == '-'
 }
 
 func sourceTypeFor(path string) string {

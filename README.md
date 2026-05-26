@@ -368,6 +368,16 @@ The CLI can also export an Excel workbook with:
 - `matched_text` is capped at 300 characters.
 - Common generated/vendor directories are skipped, including `.git`, `node_modules`, `venv`, `__pycache__`, `dist`, `build`, `.next`, and `target`.
 
+## License
+
+This project is source-available for learning, research, and non-commercial evaluation.
+
+Commercial use requires prior written permission from the copyright holder. Commercial use includes paid consulting, customer assessments, SaaS or managed-service use, redistribution, sublicensing, or inclusion in a commercial product or platform.
+
+See [LICENSE](LICENSE) and [NOTICE](NOTICE) for full terms.
+
+This is not an OSI open-source license. If you need broad open-source rights, commercial rights, or redistribution rights, contact the repository owner for a separate license.
+
 ## First-Customer Positioning
 
 This tool is best positioned as an initial PQC readiness inventory and migration planning accelerator.

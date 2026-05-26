@@ -1,0 +1,12 @@
+PQC Readiness
+Copyright (c) 2026 Atul
+
+This repository is source-available for learning, research, and non-commercial
+evaluation. Commercial use requires prior written permission from the copyright
+holder. See LICENSE for the full terms.
+
+This project includes references to third-party technologies, libraries, and
+cryptographic algorithm names. Those names remain the property of their
+respective owners.
+
+Third-party Go module dependencies are governed by their own licenses.

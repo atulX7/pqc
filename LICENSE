@@ -1,0 +1,65 @@
+PQC Readiness Source-Available Educational License
+
+Copyright (c) 2026 Atul
+
+IMPORTANT: This is a source-available license, not an open-source license as
+defined by the Open Source Initiative. The source code is made available for
+learning, review, research, and non-commercial evaluation.
+
+1. Permitted Use
+
+You may use, copy, read, run, and modify this software for:
+
+- personal learning;
+- academic or research use;
+- non-commercial security education;
+- internal non-commercial evaluation; and
+- demonstration or review of the software's behavior.
+
+2. Commercial Use Requires Prior Written Permission
+
+Any commercial use requires prior written permission from the copyright holder.
+Commercial use includes, but is not limited to:
+
+- using the software to provide paid consulting or assessment services;
+- using the software inside a paid product, platform, or SaaS service;
+- using the software in a managed service;
+- selling, sublicensing, or redistributing the software or modified versions;
+- using the software for revenue-generating customer work; or
+- using the software as part of a commercial security assessment offering.
+
+To request commercial permission, contact the repository owner.
+
+3. Redistribution
+
+You may not redistribute this software, modified versions, hosted versions, or
+packaged builds for commercial purposes without prior written permission.
+
+Non-commercial redistribution is allowed only if this license, copyright notice,
+and all notices are preserved.
+
+4. Attribution
+
+If you share or reference this software in learning, research, or evaluation
+materials, you must provide reasonable attribution to the project and copyright
+holder.
+
+5. No Warranty
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT
+HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM OR
+RELATED TO THE SOFTWARE OR THE USE OF THE SOFTWARE.
+
+6. Security and Assessment Disclaimer
+
+This software is an MVP readiness and inventory tool. It is not a formal audit,
+compliance certification, or complete security testing product. Findings may
+include false positives or false negatives and should be validated by qualified
+security and application owners.
+
+7. Third-Party Software
+
+This license applies only to this project's original source code. Third-party
+dependencies and external components remain governed by their own licenses.

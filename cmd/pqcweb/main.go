@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/atulX7/pqc/internal/app"
+	"github.com/atulX7/pqc/internal/gitrepo"
 )
 
 const maxUploadBytes = 25 * 1024 * 1024
@@ -36,6 +37,8 @@ func routes() http.Handler {
 	mux.HandleFunc("GET /healthz", healthHandler)
 	mux.HandleFunc("POST /api/scan/sample", sampleScanHandler)
 	mux.HandleFunc("POST /api/scan/upload", uploadScanHandler)
+	mux.HandleFunc("POST /api/scan/git", gitScanHandler)
+	mux.HandleFunc("POST /api/scan/domains", domainScanHandler)
 	return mux
 }
 
@@ -100,6 +103,64 @@ func uploadScanHandler(w http.ResponseWriter, r *http.Request) {
 	scanAndWrite(w, options)
 }
 
+func gitScanHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseMultipartForm(maxUploadBytes); err != nil && !errors.Is(err, http.ErrNotMultipart) {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("read form: %w", err))
+		return
+	}
+	repoURL := formValue(r, "repo_url", "")
+	branch := formValue(r, "branch", "")
+	if _, err := gitrepo.ValidatePublicGitHubURL(repoURL); err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	workDir, err := os.MkdirTemp("", "pqc-git-*")
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer os.RemoveAll(workDir)
+
+	cloneDir := filepath.Join(workDir, "repo")
+	if err := gitrepo.ClonePublicRepo(r.Context(), repoURL, branch, cloneDir); err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	options, err := optionsFromRequest(r)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	options.Path = cloneDir
+	options.RulesPath = env("RULES_PATH", "rules/crypto_rules.yaml")
+	scanAndWrite(w, options)
+}
+
+func domainScanHandler(w http.ResponseWriter, r *http.Request) {
+	options, err := optionsFromRequest(r)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	if len(options.Domains) == 0 {
+		writeError(w, http.StatusBadRequest, fmt.Errorf("enter at least one TLS domain"))
+		return
+	}
+
+	workDir, err := os.MkdirTemp("", "pqc-domains-*")
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer os.RemoveAll(workDir)
+
+	options.Path = workDir
+	options.RulesPath = env("RULES_PATH", "rules/crypto_rules.yaml")
+	scanAndWrite(w, options)
+}
+
 func scanAndWrite(w http.ResponseWriter, options app.ScanOptions) {
 	result, err := app.RunScan(options)
 	if err != nil {
@@ -121,6 +182,7 @@ func optionsFromRequest(r *http.Request) (app.ScanOptions, error) {
 	options.CryptoAgility = formValue(r, "crypto_agility", options.CryptoAgility)
 	options.VendorDependency = formValue(r, "vendor_dependency", options.VendorDependency)
 	options.MigrationComplexity = formValue(r, "migration_complexity", options.MigrationComplexity)
+	options.Domains = domainsFromForm(formValue(r, "domains", ""))
 	years := formValue(r, "secrecy_lifetime_years", strconv.Itoa(options.SecrecyLifetimeYears))
 	parsedYears, err := strconv.Atoi(years)
 	if err != nil || parsedYears < 0 {
@@ -128,6 +190,19 @@ func optionsFromRequest(r *http.Request) (app.ScanOptions, error) {
 	}
 	options.SecrecyLifetimeYears = parsedYears
 	return options, nil
+}
+
+func domainsFromForm(value string) []string {
+	var domains []string
+	for _, item := range strings.FieldsFunc(value, func(r rune) bool {
+		return r == '\n' || r == '\r' || r == ',' || r == ';'
+	}) {
+		item = strings.TrimSpace(item)
+		if item != "" {
+			domains = append(domains, item)
+		}
+	}
+	return domains
 }
 
 func formValue(r *http.Request, key string, fallback string) string {

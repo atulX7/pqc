@@ -31,8 +31,18 @@ func NormalizeFindings(findings []Finding, metadata BusinessMetadata) []CryptoAs
 func InferCryptoUsageType(matchedText string, ruleName string) string {
 	value := strings.ToLower(matchedText + " " + ruleName)
 	switch {
+	case strings.Contains(value, "signingcredentials") ||
+		strings.Contains(value, "rsasecuritykey"):
+		return "JWT signing"
+	case strings.Contains(value, "jwtsecuritytokenhandler") ||
+		strings.Contains(value, "jwtsecuritytoken"):
+		return "JWT token handling"
 	case strings.Contains(value, "jwt") || strings.Contains(value, "rs256") || strings.Contains(value, "es256"):
 		return "JWT signing"
+	case strings.Contains(value, "importrsaprivatekey"):
+		return "private key import"
+	case strings.Contains(value, "importsubjectpublickeyinfo"):
+		return "public key import"
 	case strings.Contains(value, "from crypto.publickey import rsa") ||
 		strings.Contains(value, "cryptography rsa import") ||
 		strings.Contains(value, "pycryptodome rsa import"):
@@ -47,6 +57,8 @@ func InferCryptoUsageType(matchedText string, ruleName string) string {
 		strings.Contains(value, "key import"):
 		return "key import/loading"
 	case strings.Contains(value, "keypairgenerator"):
+		return "key generation"
+	case strings.Contains(value, "rsa.create"):
 		return "key generation"
 	case strings.Contains(value, "pkcs1_15") || strings.Contains(value, "crypto.signature"):
 		return "digital signature"

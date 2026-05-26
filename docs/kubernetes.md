@@ -32,3 +32,5 @@ The app supports:
 - `GET /healthz`
 - `POST /api/scan/sample`
 - `POST /api/scan/upload` with multipart field `repo` containing a `.zip`
+- `POST /api/scan/git` with multipart field `repo_url` containing a public `https://github.com/owner/repo` URL and optional `branch`
+- `POST /api/scan/domains` with multipart field `domains` containing one or more TLS domains separated by newlines, commas, or semicolons

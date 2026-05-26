@@ -25,7 +25,8 @@ var scannedExtensions = map[string]bool{
 	".go": true, ".py": true, ".js": true, ".ts": true, ".java": true, ".cs": true,
 	".rb": true, ".php": true, ".yaml": true, ".yml": true, ".json": true,
 	".xml": true, ".properties": true, ".env": true, ".pem": true, ".key": true,
-	".crt": true, ".conf": true, ".tf": true,
+	".crt": true, ".conf": true, ".tf": true, ".fs": true, ".fsx": true,
+	".fsi": true, ".fsproj": true, ".priv": true, ".pub": true,
 }
 
 type ScanResult struct {
@@ -169,7 +170,7 @@ func matchesRulePattern(line string, pattern string) bool {
 }
 
 func isExactPattern(pattern string) bool {
-	return strings.ContainsAny(pattern, "\"'().:_/- ") || len(pattern) > 8
+	return strings.ContainsAny(pattern, "\"'().:_/- ")
 }
 
 func isTokenChar(char rune) bool {

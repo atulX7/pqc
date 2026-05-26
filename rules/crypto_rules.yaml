@@ -169,6 +169,57 @@ rules:
     algorithm: ECC
     risk_type: quantum_vulnerable_public_key
     severity: high
+  - id: dotnet-rsa-create
+    name: .NET RSA key creation
+    pattern: RSA.Create
+    algorithm: RSA
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+    priority: 80
+  - id: dotnet-rsa-private-import
+    name: .NET RSA private key import
+    pattern: ImportRSAPrivateKey
+    algorithm: RSA
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+    priority: 90
+  - id: dotnet-rsa-public-import
+    name: .NET RSA public key import
+    pattern: ImportSubjectPublicKeyInfo
+    algorithm: RSA
+    risk_type: quantum_vulnerable_public_key
+    severity: high
+    priority: 90
+  - id: dotnet-rsa-security-key
+    name: .NET RsaSecurityKey usage
+    pattern: RsaSecurityKey
+    algorithm: RSA
+    risk_type: quantum_vulnerable_signature
+    severity: high
+    priority: 90
+  - id: dotnet-jwt-signing-credentials
+    name: .NET JWT SigningCredentials
+    pattern: SigningCredentials
+    algorithm: RSA
+    risk_type: quantum_vulnerable_signature
+    severity: high
+    priority: 95
+  - id: dotnet-jwt-token-handler
+    name: .NET JWT token handler
+    pattern: JwtSecurityTokenHandler
+    algorithm: RSA
+    risk_type: quantum_vulnerable_signature
+    severity: low
+    confidence: low
+    priority: 15
+  - id: dotnet-jwt-security-token
+    name: .NET JWT security token
+    pattern: JwtSecurityToken
+    algorithm: RSA
+    risk_type: quantum_vulnerable_signature
+    severity: low
+    confidence: low
+    priority: 15
   - id: python-crypto-rsa-import
     name: Python cryptography RSA import
     pattern: from cryptography.hazmat.primitives.asymmetric import rsa

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"sort"
+	"strings"
 
 	"github.com/atulX7/pqc/internal/inventory"
 	"github.com/xuri/excelize/v2"
@@ -189,7 +190,24 @@ func setRow(file *excelize.File, sheet string, row int, values []any) {
 func topAssets(assets []inventory.CryptoAsset, limit int) []CriticalAsset {
 	copyAssets := append([]inventory.CryptoAsset(nil), assets...)
 	sort.SliceStable(copyAssets, func(i, j int) bool {
-		return copyAssets[i].QuantumRiskScore > copyAssets[j].QuantumRiskScore
+		left := copyAssets[i]
+		right := copyAssets[j]
+		if left.QuantumRiskScore != right.QuantumRiskScore {
+			return left.QuantumRiskScore > right.QuantumRiskScore
+		}
+		if severityRank(left.Severity) != severityRank(right.Severity) {
+			return severityRank(left.Severity) > severityRank(right.Severity)
+		}
+		if confidenceRank(left.Confidence) != confidenceRank(right.Confidence) {
+			return confidenceRank(left.Confidence) > confidenceRank(right.Confidence)
+		}
+		if usageRank(left.CryptoUsageType) != usageRank(right.CryptoUsageType) {
+			return usageRank(left.CryptoUsageType) > usageRank(right.CryptoUsageType)
+		}
+		if left.FilePath != right.FilePath {
+			return left.FilePath < right.FilePath
+		}
+		return left.LineNumber < right.LineNumber
 	})
 	if len(copyAssets) > limit {
 		copyAssets = copyAssets[:limit]
@@ -207,6 +225,53 @@ func topAssets(assets []inventory.CryptoAsset, limit int) []CriticalAsset {
 		})
 	}
 	return top
+}
+
+func severityRank(value string) int {
+	switch strings.ToLower(strings.TrimSpace(value)) {
+	case "critical":
+		return 4
+	case "high":
+		return 3
+	case "medium":
+		return 2
+	case "low":
+		return 1
+	default:
+		return 0
+	}
+}
+
+func confidenceRank(value string) int {
+	switch strings.ToLower(strings.TrimSpace(value)) {
+	case "high":
+		return 3
+	case "medium":
+		return 2
+	case "low":
+		return 1
+	default:
+		return 0
+	}
+}
+
+func usageRank(value string) int {
+	switch strings.ToLower(strings.TrimSpace(value)) {
+	case "private key material":
+		return 6
+	case "private key import", "key file reference", "public key import":
+		return 5
+	case "jwt signing", "digital signature":
+		return 4
+	case "tls/ssl configuration":
+		return 3
+	case "key generation", "encryption/decryption":
+		return 2
+	case "jwt token handling", "crypto library import":
+		return 1
+	default:
+		return 0
+	}
 }
 
 func buildExecutiveSummary(data JSONReport) ExecutiveSummary {

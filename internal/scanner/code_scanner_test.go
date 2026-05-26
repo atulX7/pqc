@@ -162,3 +162,43 @@ func TestScanPathPrefersConcretePrimitiveOverModuleImport(t *testing.T) {
 		t.Fatalf("expected OAEP finding to win, got %+v", result.Findings[0])
 	}
 }
+
+func TestScanPathScansFSharpAndKeyFiles(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "jwt.fsx"), []byte(`use rsa = RSA.Create()
+rsa.ImportRSAPrivateKey(new ReadOnlySpan<byte>(privKey), &bytesRead)
+new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256)`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "key.priv"), []byte("-----BEGIN RSA PRIVATE KEY-----\nabc\n-----END RSA PRIVATE KEY-----"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	loadedRules := []rules.Rule{
+		{ID: "dotnet-rsa-create", Name: ".NET RSA key creation", Pattern: "RSA.Create", Algorithm: "RSA", RiskType: "quantum_vulnerable_public_key", Severity: "high", Confidence: "high", Priority: 80},
+		{ID: "dotnet-rsa-private-import", Name: ".NET RSA private key import", Pattern: "ImportRSAPrivateKey", Algorithm: "RSA", RiskType: "quantum_vulnerable_public_key", Severity: "high", Confidence: "high", Priority: 90},
+		{ID: "dotnet-jwt-signing-credentials", Name: ".NET JWT SigningCredentials", Pattern: "SigningCredentials", Algorithm: "RSA", RiskType: "quantum_vulnerable_signature", Severity: "high", Confidence: "high", Priority: 95},
+		{ID: "dotnet-rsa-security-key", Name: ".NET RsaSecurityKey usage", Pattern: "RsaSecurityKey", Algorithm: "RSA", RiskType: "quantum_vulnerable_signature", Severity: "high", Confidence: "high", Priority: 90},
+		{ID: "rsa-private-key", Name: "RSA private key committed", Pattern: "-----BEGIN RSA PRIVATE KEY-----", Algorithm: "RSA", RiskType: "secret_exposure", Severity: "critical", Confidence: "high", Priority: 50},
+	}
+
+	result, err := ScanPath(dir, loadedRules)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.FilesScanned != 2 {
+		t.Fatalf("expected 2 scanned files, got %d", result.FilesScanned)
+	}
+	if len(result.Findings) != 4 {
+		t.Fatalf("expected 4 findings, got %d: %+v", len(result.Findings), result.Findings)
+	}
+	var masked bool
+	for _, finding := range result.Findings {
+		if finding.RuleID == "rsa-private-key" && finding.MatchedText == "[MASKED PRIVATE KEY MATERIAL]" {
+			masked = true
+		}
+	}
+	if !masked {
+		t.Fatal("expected .priv private key finding to be masked")
+	}
+}

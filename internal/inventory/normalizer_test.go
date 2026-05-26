@@ -45,6 +45,36 @@ func TestInferCryptoUsageTypeForPyCryptodomePatterns(t *testing.T) {
 			ruleName:    "PyCryptodome RSA PKCS#1 signature",
 			want:        "digital signature",
 		},
+		{
+			name:        "dotnet private key import",
+			matchedText: "rsa.ImportRSAPrivateKey(new ReadOnlySpan<byte>(privKey), &bytesRead)",
+			ruleName:    ".NET RSA private key import",
+			want:        "private key import",
+		},
+		{
+			name:        "dotnet public key import",
+			matchedText: "rsa.ImportSubjectPublicKeyInfo(new ReadOnlySpan<byte>(pubKey), &bytesRead)",
+			ruleName:    ".NET RSA public key import",
+			want:        "public key import",
+		},
+		{
+			name:        "dotnet jwt signing",
+			matchedText: "new SigningCredentials(new RsaSecurityKey(rsa), SecurityAlgorithms.RsaSha256)",
+			ruleName:    ".NET JWT SigningCredentials",
+			want:        "JWT signing",
+		},
+		{
+			name:        "dotnet jwt token handling",
+			matchedText: "let handler = new JwtSecurityTokenHandler()",
+			ruleName:    ".NET JWT token handler",
+			want:        "JWT token handling",
+		},
+		{
+			name:        "dotnet rsa create",
+			matchedText: "use rsa = RSA.Create()",
+			ruleName:    ".NET RSA key creation",
+			want:        "key generation",
+		},
 	}
 
 	for _, tt := range tests {

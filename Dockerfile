@@ -8,7 +8,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /out/pqcweb ./cmd/pqcweb
 
 FROM alpine:3.20
 
-RUN adduser -D -H -u 10001 pqc
+RUN apk add --no-cache git ca-certificates && adduser -D -H -u 10001 pqc
 WORKDIR /app
 COPY --from=build /out/pqcweb /app/pqcweb
 COPY rules ./rules

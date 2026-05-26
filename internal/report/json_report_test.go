@@ -33,6 +33,49 @@ func TestBuildIncludesExecutiveSummaryAndUsageCounts(t *testing.T) {
 	}
 }
 
+func TestTopAssetsPrioritizesSeverityConfidenceAndUsageOnRiskTie(t *testing.T) {
+	assets := []inventory.CryptoAsset{
+		{
+			CryptoUsageType:  "JWT token handling",
+			Algorithm:        "RSA",
+			Severity:         "low",
+			Confidence:       "low",
+			QuantumRiskScore: 83,
+			RiskLevel:        "Critical",
+			FilePath:         "jwt.fsx",
+			LineNumber:       78,
+		},
+		{
+			CryptoUsageType:  "private key material",
+			Algorithm:        "RSA",
+			Severity:         "critical",
+			Confidence:       "high",
+			QuantumRiskScore: 83,
+			RiskLevel:        "Critical",
+			FilePath:         "key.priv",
+			LineNumber:       1,
+		},
+		{
+			CryptoUsageType:  "JWT signing",
+			Algorithm:        "RSA",
+			Severity:         "high",
+			Confidence:       "high",
+			QuantumRiskScore: 83,
+			RiskLevel:        "Critical",
+			FilePath:         "jwt.fsx",
+			LineNumber:       50,
+		},
+	}
+
+	top := topAssets(assets, 3)
+	if top[0].Usage != "private key material" {
+		t.Fatalf("expected private key material first, got %+v", top)
+	}
+	if top[2].Usage != "JWT token handling" {
+		t.Fatalf("expected JWT token handling last, got %+v", top)
+	}
+}
+
 func TestWriteExcelCreatesWorkbook(t *testing.T) {
 	report := Build("Clinical API", ScanSummary{FilesScanned: 1}, nil)
 	path := filepath.Join(t.TempDir(), "report.xlsx")

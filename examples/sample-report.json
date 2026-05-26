@@ -1,0 +1,414 @@
+{
+  "application_name": "Clinical API",
+  "executive_summary": {
+    "overall_risk_posture": "Critical",
+    "top_10_critical_assets": [
+      {
+        "algorithm": "RSA",
+        "usage": "private key material",
+        "file": "config/test.key",
+        "line": 1,
+        "risk_score": 83,
+        "risk_level": "Critical",
+        "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+      },
+      {
+        "algorithm": "RSA",
+        "usage": "JWT signing",
+        "file": "auth/token_service.py",
+        "line": 3,
+        "risk_score": 83,
+        "risk_level": "Critical",
+        "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+      },
+      {
+        "algorithm": "RSA",
+        "usage": "TLS/SSL configuration",
+        "file": "config/tls.yaml",
+        "line": 3,
+        "risk_score": 83,
+        "risk_level": "Critical",
+        "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+      },
+      {
+        "algorithm": "ECDSA",
+        "usage": "TLS/SSL configuration",
+        "file": "github.com",
+        "line": 0,
+        "risk_score": 83,
+        "risk_level": "Critical",
+        "recommendation": "Add this ECDSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+      },
+      {
+        "algorithm": "RSA",
+        "usage": "key generation",
+        "file": "java/CryptoFactory.java",
+        "line": 5,
+        "risk_score": 83,
+        "risk_level": "Critical",
+        "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+      },
+      {
+        "algorithm": "RSA",
+        "usage": "crypto library import",
+        "file": "auth/token_service.py",
+        "line": 1,
+        "risk_score": 83,
+        "risk_level": "Critical",
+        "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+      },
+      {
+        "algorithm": "RSA",
+        "usage": "private key material",
+        "file": "config/test.key",
+        "line": 3,
+        "risk_score": 83,
+        "risk_level": "Critical",
+        "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+      },
+      {
+        "algorithm": "RSA-2048",
+        "usage": "unknown crypto usage",
+        "file": "config/tls.yaml",
+        "line": 4,
+        "risk_score": 83,
+        "risk_level": "Critical",
+        "recommendation": "Add this RSA-2048 usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+      }
+    ],
+    "findings_by_algorithm": {
+      "ECDSA": 1,
+      "RSA": 6,
+      "RSA-2048": 1
+    },
+    "findings_by_usage_type": {
+      "JWT signing": 1,
+      "TLS/SSL configuration": 2,
+      "crypto library import": 1,
+      "key generation": 1,
+      "private key material": 2,
+      "unknown crypto usage": 1
+    },
+    "actions_30_days": [
+      "Validate high and critical findings with application owners.",
+      "Confirm TLS certificate algorithms, key sizes, and expiry dates for internet-facing domains.",
+      "Identify owners and systems of record for each crypto asset."
+    ],
+    "actions_60_days": [
+      "Prioritize remediation for externally exposed signatures, key exchange, certificates, and private key material.",
+      "Define target hybrid or post-quantum patterns for affected platforms.",
+      "Request vendor PQC roadmaps for third-party dependencies."
+    ],
+    "actions_90_days": [
+      "Create migration backlog items with owners, test plans, and rollback plans.",
+      "Pilot crypto-agility changes for the highest-risk services.",
+      "Establish recurring scans in CI or release readiness checks."
+    ]
+  },
+  "scan_summary": {
+    "files_scanned": 4,
+    "files_skipped": 0
+  },
+  "total_findings": 8,
+  "findings_by_algorithm": {
+    "ECDSA": 1,
+    "RSA": 6,
+    "RSA-2048": 1
+  },
+  "findings_by_severity": {
+    "critical": 1,
+    "high": 7
+  },
+  "findings_by_usage_type": {
+    "JWT signing": 1,
+    "TLS/SSL configuration": 2,
+    "crypto library import": 1,
+    "key generation": 1,
+    "private key material": 2,
+    "unknown crypto usage": 1
+  },
+  "top_critical_assets": [
+    {
+      "algorithm": "RSA",
+      "usage": "private key material",
+      "file": "config/test.key",
+      "line": 1,
+      "risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "algorithm": "RSA",
+      "usage": "JWT signing",
+      "file": "auth/token_service.py",
+      "line": 3,
+      "risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "algorithm": "RSA",
+      "usage": "TLS/SSL configuration",
+      "file": "config/tls.yaml",
+      "line": 3,
+      "risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "algorithm": "ECDSA",
+      "usage": "TLS/SSL configuration",
+      "file": "github.com",
+      "line": 0,
+      "risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this ECDSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "algorithm": "RSA",
+      "usage": "key generation",
+      "file": "java/CryptoFactory.java",
+      "line": 5,
+      "risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "algorithm": "RSA",
+      "usage": "crypto library import",
+      "file": "auth/token_service.py",
+      "line": 1,
+      "risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "algorithm": "RSA",
+      "usage": "private key material",
+      "file": "config/test.key",
+      "line": 3,
+      "risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "algorithm": "RSA-2048",
+      "usage": "unknown crypto usage",
+      "file": "config/tls.yaml",
+      "line": 4,
+      "risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA-2048 usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    }
+  ],
+  "full_crypto_inventory": [
+    {
+      "application_name": "Clinical API",
+      "source_type": "source_code",
+      "file_path": "auth/token_service.py",
+      "line_number": 1,
+      "crypto_usage_type": "crypto library import",
+      "algorithm": "RSA",
+      "severity": "high",
+      "risk_type": "quantum_vulnerable_public_key",
+      "confidence": "high",
+      "matched_text": "from cryptography.hazmat.primitives.asymmetric import rsa",
+      "sensitivity_flags": [
+        "PHI",
+        "GxP"
+      ],
+      "exposure_level": "internet_authenticated",
+      "business_criticality": "high",
+      "secrecy_lifetime_years": 15,
+      "crypto_agility_level": "partially_configurable",
+      "vendor_dependency_level": "cloud_with_roadmap",
+      "migration_complexity": "multi_system",
+      "quantum_risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "application_name": "Clinical API",
+      "source_type": "source_code",
+      "file_path": "auth/token_service.py",
+      "line_number": 3,
+      "crypto_usage_type": "JWT signing",
+      "algorithm": "RSA",
+      "severity": "high",
+      "risk_type": "quantum_vulnerable_signature",
+      "confidence": "high",
+      "matched_text": "JWT_ALGORITHM = \"RS256\"",
+      "sensitivity_flags": [
+        "PHI",
+        "GxP"
+      ],
+      "exposure_level": "internet_authenticated",
+      "business_criticality": "high",
+      "secrecy_lifetime_years": 15,
+      "crypto_agility_level": "partially_configurable",
+      "vendor_dependency_level": "cloud_with_roadmap",
+      "migration_complexity": "multi_system",
+      "quantum_risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "application_name": "Clinical API",
+      "source_type": "certificate_or_key",
+      "file_path": "config/test.key",
+      "line_number": 1,
+      "crypto_usage_type": "private key material",
+      "algorithm": "RSA",
+      "severity": "critical",
+      "risk_type": "secret_exposure",
+      "confidence": "high",
+      "matched_text": "[MASKED PRIVATE KEY MATERIAL]",
+      "sensitivity_flags": [
+        "PHI",
+        "GxP"
+      ],
+      "exposure_level": "internet_authenticated",
+      "business_criticality": "high",
+      "secrecy_lifetime_years": 15,
+      "crypto_agility_level": "partially_configurable",
+      "vendor_dependency_level": "cloud_with_roadmap",
+      "migration_complexity": "multi_system",
+      "quantum_risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "application_name": "Clinical API",
+      "source_type": "certificate_or_key",
+      "file_path": "config/test.key",
+      "line_number": 3,
+      "crypto_usage_type": "private key material",
+      "algorithm": "RSA",
+      "severity": "high",
+      "risk_type": "quantum_vulnerable_public_key",
+      "confidence": "medium",
+      "matched_text": "[MASKED PRIVATE KEY MATERIAL]",
+      "sensitivity_flags": [
+        "PHI",
+        "GxP"
+      ],
+      "exposure_level": "internet_authenticated",
+      "business_criticality": "high",
+      "secrecy_lifetime_years": 15,
+      "crypto_agility_level": "partially_configurable",
+      "vendor_dependency_level": "cloud_with_roadmap",
+      "migration_complexity": "multi_system",
+      "quantum_risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "application_name": "Clinical API",
+      "source_type": "configuration",
+      "file_path": "config/tls.yaml",
+      "line_number": 3,
+      "crypto_usage_type": "TLS/SSL configuration",
+      "algorithm": "RSA",
+      "severity": "high",
+      "risk_type": "quantum_vulnerable_tls",
+      "confidence": "high",
+      "matched_text": "- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+      "sensitivity_flags": [
+        "PHI",
+        "GxP"
+      ],
+      "exposure_level": "internet_authenticated",
+      "business_criticality": "high",
+      "secrecy_lifetime_years": 15,
+      "crypto_agility_level": "partially_configurable",
+      "vendor_dependency_level": "cloud_with_roadmap",
+      "migration_complexity": "multi_system",
+      "quantum_risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "application_name": "Clinical API",
+      "source_type": "configuration",
+      "file_path": "config/tls.yaml",
+      "line_number": 4,
+      "crypto_usage_type": "unknown crypto usage",
+      "algorithm": "RSA-2048",
+      "severity": "high",
+      "risk_type": "quantum_vulnerable_public_key",
+      "confidence": "medium",
+      "matched_text": "public_key_algorithm: RSA-2048",
+      "sensitivity_flags": [
+        "PHI",
+        "GxP"
+      ],
+      "exposure_level": "internet_authenticated",
+      "business_criticality": "high",
+      "secrecy_lifetime_years": 15,
+      "crypto_agility_level": "partially_configurable",
+      "vendor_dependency_level": "cloud_with_roadmap",
+      "migration_complexity": "multi_system",
+      "quantum_risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA-2048 usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "application_name": "Clinical API",
+      "source_type": "source_code",
+      "file_path": "java/CryptoFactory.java",
+      "line_number": 5,
+      "crypto_usage_type": "key generation",
+      "algorithm": "RSA",
+      "severity": "high",
+      "risk_type": "quantum_vulnerable_public_key",
+      "confidence": "high",
+      "matched_text": "return KeyPairGenerator.getInstance(\"RSA\");",
+      "sensitivity_flags": [
+        "PHI",
+        "GxP"
+      ],
+      "exposure_level": "internet_authenticated",
+      "business_criticality": "high",
+      "secrecy_lifetime_years": 15,
+      "crypto_agility_level": "partially_configurable",
+      "vendor_dependency_level": "cloud_with_roadmap",
+      "migration_complexity": "multi_system",
+      "quantum_risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this RSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    },
+    {
+      "application_name": "Clinical API",
+      "source_type": "tls_certificate",
+      "file_path": "github.com",
+      "line_number": 0,
+      "crypto_usage_type": "TLS/SSL configuration",
+      "algorithm": "ECDSA",
+      "severity": "high",
+      "risk_type": "quantum_vulnerable_public_key",
+      "confidence": "high",
+      "matched_text": "subject=\"CN=github.com\" issuer=\"CN=Sectigo Public Server Authentication CA DV E36,O=Sectigo Limited,C=GB\" public_key=ECDSA key_size=256 not_after=2026-08-02T23:59:59Z days_until_expiry=68",
+      "sensitivity_flags": [
+        "PHI",
+        "GxP"
+      ],
+      "exposure_level": "internet_authenticated",
+      "business_criticality": "high",
+      "secrecy_lifetime_years": 15,
+      "crypto_agility_level": "partially_configurable",
+      "vendor_dependency_level": "cloud_with_roadmap",
+      "migration_complexity": "multi_system",
+      "quantum_risk_score": 83,
+      "risk_level": "Critical",
+      "recommendation": "Add this ECDSA usage to the PQC migration inventory and assess hybrid or post-quantum alternatives. Prioritize this asset because sensitive or regulated data may require long-term confidentiality and compliance planning. Review externally exposed TLS, certificate, signing, and key exchange dependencies for PQC migration readiness. Place this item into a Phase 1 migration roadmap with ownership, target architecture, and validation milestones."
+    }
+  ],
+  "highest_quantum_risk_score": 83,
+  "risk_posture": "Critical",
+  "recommended_next_steps": [
+    "Validate findings with application owners and security engineering.",
+    "Assign ownership for high-risk crypto assets and document system dependencies.",
+    "Define target PQC or hybrid migration patterns for signatures, key exchange, TLS, and certificates.",
+    "Create a Phase 1 migration roadmap for the highest-risk assets."
+  ]
+}

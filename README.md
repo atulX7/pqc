@@ -56,7 +56,7 @@ Public GitHub scanning performs a shallow clone into a temporary directory, scan
 
 ## Install
 
-Install Go 1.22 or newer. This repo currently builds and tests with the installed Go toolchain in the local environment.
+Install Go 1.24 or newer. The module and Docker image are aligned on Go 1.24 because current report-export dependencies require Go 1.24.
 
 Build the CLI:
 
@@ -167,6 +167,10 @@ The results page shows:
 - Inventory preview
 - 30/60/90-day actions
 - Full JSON report with a `Copy JSON` button
+
+Preview:
+
+![PQC Readiness web UI](screenshots/web-ui.png)
 
 ### Public GitHub Scan
 
@@ -356,6 +360,11 @@ The CLI can also export an Excel workbook with:
 - Top assets
 - Full crypto inventory
 
+Example reports are included under [examples](examples/):
+
+- [examples/sample-report.json](examples/sample-report.json)
+- [examples/sample-report.xlsx](examples/sample-report.xlsx)
+
 ## Security Notes
 
 - The scanner is read-only.
@@ -367,6 +376,15 @@ The CLI can also export an Excel workbook with:
 - Private key material is masked in reports.
 - `matched_text` is capped at 300 characters.
 - Common generated/vendor directories are skipped, including `.git`, `node_modules`, `venv`, `__pycache__`, `dist`, `build`, `.next`, and `target`.
+
+## Known Limitations
+
+- Rule-based scanning can produce false positives and false negatives.
+- Public GitHub repository scanning is supported; private repository authentication is not implemented yet.
+- This is not a formal audit, compliance certification, SAST, SCA, or secrets-scanner replacement.
+- The tool does not automatically migrate or replace cryptography.
+- Results should be validated by application owners and security engineers before remediation decisions.
+- Risk scoring depends on both technical findings and business metadata, so incorrect metadata can change prioritization.
 
 ## License
 
@@ -403,3 +421,14 @@ Do not position this MVP as a formal audit sign-off, complete SAST replacement, 
 ```bash
 go test ./...
 ```
+
+The current test suite covers:
+
+- YAML rule loading
+- scanner matching and deduplication
+- private key masking
+- GitHub URL validation
+- risk scoring
+- recommendation generation
+- TLS certificate parsing
+- JSON and Excel report generation
